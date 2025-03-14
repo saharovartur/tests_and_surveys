@@ -38,6 +38,15 @@ class Company(models.Model):
     """Модель компании"""
     name = models.CharField(verbose_name='Название компании', max_length=255, unique=True)
     description = models.TextField(verbose_name='Описание', blank=True, null=True)
+    leader = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='companies_led',
+        verbose_name="Руководитель компании"
+    )
+    founded_year = models.PositiveIntegerField(verbose_name="Год основания", null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -53,10 +62,14 @@ class Department(models.Model):
         blank=True, 
         null=True
     )
+    leader = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='departments_led',
+        verbose_name="Руководитель отдела"
+    )
 
     def __str__(self):
         return f"{self.title} ({self.company.name if self.company else 'Нет компании'})"
-
-    class Meta:
-        verbose_name = "Отдел"
-        verbose_name_plural = "Отделы"
