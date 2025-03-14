@@ -2,6 +2,10 @@ from django.db import models
 from users.models import CustomUser
 
 class Test(models.Model):
+    """
+    Модель теста.
+    Представляет собой тест, который может быть создан автором и привязан к компании или отделу.
+    """
     title = models.CharField(max_length=255, verbose_name="Название теста")
     description = models.TextField(null=True, blank=True, verbose_name="Описание теста")
     created_by = models.ForeignKey(
@@ -9,6 +13,22 @@ class Test(models.Model):
         on_delete=models.CASCADE, 
         related_name='tests_created', 
         verbose_name="Автор теста"
+    )
+    company = models.ForeignKey(
+        'users.Company',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='tests_for_company',
+        verbose_name="Компания"
+    )
+    department = models.ForeignKey(
+        'users.Department',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='tests_for_department',
+        verbose_name="Отдел"
     )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     recipient_email = models.EmailField(verbose_name="Email получателя результатов")
@@ -22,6 +42,10 @@ class Test(models.Model):
 
 
 class TestQuestion(models.Model):
+    """
+    Модель вопроса теста.
+    Каждый вопрос связан с конкретным тестом и содержит текст вопроса.
+    """
     test = models.ForeignKey(
         'Test', 
         on_delete=models.CASCADE, 
@@ -39,6 +63,10 @@ class TestQuestion(models.Model):
 
 
 class TestAnswerOption(models.Model):
+    """
+    Модель варианта ответа на вопрос теста.
+    Каждый вариант связан с конкретным вопросом и может быть помечен как правильный.
+    """
     question = models.ForeignKey(
         'TestQuestion', 
         on_delete=models.CASCADE, 
@@ -57,6 +85,10 @@ class TestAnswerOption(models.Model):
 
 
 class TestResponse(models.Model):
+    """
+    Модель результата прохождения теста.
+    Связывает тест, сотрудника и дату прохождения.
+    """
     test = models.ForeignKey(
         'Test', 
         on_delete=models.CASCADE, 
@@ -80,6 +112,10 @@ class TestResponse(models.Model):
 
 
 class TestAnswer(models.Model):
+    """
+    Модель ответа на вопрос теста.
+    Связывает результат теста, вопрос и выбранный вариант ответа.
+    """
     response = models.ForeignKey(
         'TestResponse', 
         on_delete=models.CASCADE, 
