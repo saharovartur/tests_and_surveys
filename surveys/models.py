@@ -2,6 +2,10 @@ from django.db import models
 from users.models import CustomUser
 
 class Survey(models.Model):
+    """
+    Модель опроса.
+    Представляет собой опрос, который может быть создан автором и привязан к компании или отделу.
+    """
     title = models.CharField(max_length=255, verbose_name="Название опроса")
     description = models.TextField(null=True, blank=True, verbose_name="Описание опроса")
     created_by = models.ForeignKey(
@@ -9,6 +13,22 @@ class Survey(models.Model):
         on_delete=models.CASCADE, 
         related_name='surveys_created', 
         verbose_name="Автор опроса"
+    )
+    company = models.ForeignKey(
+        'users.Company',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='surveys_for_companys',
+        verbose_name="Компания"
+    )
+    department = models.ForeignKey(
+        'users.Department',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='surveys_for_department',
+        verbose_name="Отдел"
     )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     recipient_email = models.EmailField(verbose_name="Email получателя результатов")
@@ -22,6 +42,10 @@ class Survey(models.Model):
 
 
 class SurveyQuestion(models.Model):
+    """
+    Модель вопроса опроса.
+    Каждый вопрос связан с конкретным опросом и содержит текст вопроса.
+    """
     survey = models.ForeignKey(
         'Survey', 
         on_delete=models.CASCADE, 
@@ -39,6 +63,10 @@ class SurveyQuestion(models.Model):
 
 
 class SurveyAnswerOption(models.Model):
+    """
+    Модель варианта ответа на вопрос опроса.
+    Каждый вариант связан с конкретным вопросом и содержит текст варианта.
+    """
     question = models.ForeignKey(
         'SurveyQuestion', 
         on_delete=models.CASCADE, 
@@ -56,6 +84,10 @@ class SurveyAnswerOption(models.Model):
 
 
 class SurveyResponse(models.Model):
+    """
+    Модель результата прохождения опроса.
+    Связывает опрос, сотрудника и дату прохождения.
+    """
     survey = models.ForeignKey(
         'Survey', 
         on_delete=models.CASCADE, 
@@ -79,6 +111,10 @@ class SurveyResponse(models.Model):
 
 
 class SurveyAnswer(models.Model):
+    """
+    Модель ответа на вопрос опроса.
+    Связывает результат опроса, вопрос и выбранный вариант ответа.
+    """
     response = models.ForeignKey(
         'SurveyResponse', 
         on_delete=models.CASCADE, 
