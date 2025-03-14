@@ -34,7 +34,10 @@ INSTALLED_APPS = [
     # MyApps
     'tests',
     'surveys',
+    'users'
 ]
+
+AUTH_USER_MODEL = 'users.CustomUser'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
